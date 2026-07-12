@@ -1,0 +1,222 @@
+* { box-sizing: border-box; }
+:root {
+  --bg-page: #f4f5f7;
+  --bg-card: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-label: #374151;
+  --border-color: #e5e7eb;
+  --input-border: #d1d5db;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08);
+  --navbar-bg: #0f766e;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f4f5f7;
+  color: #1f2937;
+}
+.app-shell {
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.app-shell[data-theme="dark"] {
+  --bg-page: #0f1115;
+  --bg-card: #1a1d23;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-label: #d1d5db;
+  --border-color: #2a2e37;
+  --input-border: #3a3f4b;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4);
+  --navbar-bg: #0b3d3a;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.card {
+  background: var(--bg-card); border-radius: 10px; padding: 20px;
+  box-shadow: var(--shadow-card); margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+}
+.btn {
+  background: #0f766e; color: #fff; border: none; padding: 10px 16px;
+  border-radius: 6px; cursor: pointer; font-size: 14px;
+}
+.btn:hover { background: #0d5f58; }
+.btn-secondary { background: #6b7280; }
+.btn-secondary:hover { background: #4b5563; }
+.btn-danger { background: #dc2626; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-icon {
+  background: transparent; border: 1px solid var(--border-color); color: var(--text-primary);
+  padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 15px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-icon:hover { background: rgba(255,255,255,0.08); }
+input, select {
+  padding: 8px 10px; border: 1px solid var(--input-border); border-radius: 6px;
+  font-size: 14px; width: 100%; background: var(--bg-card); color: var(--text-primary);
+}
+label { font-size: 13px; font-weight: 600; color: var(--text-label); display: block; margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+th { color: var(--text-secondary); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+td { color: var(--text-primary); }
+.badge { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; display: inline-block; }
+.navbar {
+  background: var(--navbar-bg); color: #fff; padding: 14px 24px; display: flex;
+  justify-content: space-between; align-items: center; transition: background 0.2s ease;
+}
+.navbar a { color: #fff; text-decoration: none; margin-right: 18px; font-size: 14px; }
+.navbar a:hover { text-decoration: underline; }
+.navbar-actions { display: flex; align-items: center; gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat {
+  background: var(--bg-card); border-radius: 10px; padding: 18px;
+  box-shadow: var(--shadow-card); border: 1px solid var(--border-color);
+}
+.stat .value { font-size: 26px; font-weight: 700; color: var(--text-primary); }
+.stat .label { font-size: 13px; color: var(--text-secondary); }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 14px; }
+.error { color: #dc2626; font-size: 13px; margin-top: 6px; }
+.text-muted { color: var(--text-secondary); }
+h2, h3 { color: var(--text-primary); }
+.reporte-card-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+}
+
+/* ---- Punto de venta ---- */
+.pos-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; align-items: start; }
+.pos-product-list { margin-top: 14px; max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.pos-product-item {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; text-align: left; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary);
+  cursor: pointer; font-size: 14px;
+}
+.pos-product-item:hover { border-color: #0f766e; background: rgba(15,118,110,0.06); }
+.pos-total {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 20px; font-weight: 700; margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border-color); color: var(--text-primary);
+}
+@media (max-width: 860px) {
+  .pos-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Factura ---- */
+.factura-actions { display: flex; gap: 10px; margin-bottom: 16px; }
+.factura-sheet { max-width: 720px; margin: 0 auto; }
+.factura-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;
+}
+.factura-numero { text-align: right; }
+.factura-numero-label { font-size: 11px; letter-spacing: 1px; color: var(--text-secondary); font-weight: 700; }
+.factura-numero-valor { font-size: 20px; font-weight: 800; color: #0f766e; }
+.factura-meta { display: flex; flex-direction: column; gap: 6px; font-size: 14px; margin-bottom: 20px; color: var(--text-primary); }
+.factura-table { margin-bottom: 12px; }
+.factura-total {
+  display: flex; justify-content: space-between; font-size: 20px; font-weight: 800;
+  border-top: 2px solid var(--border-color); padding-top: 12px; color: var(--text-primary);
+}
+.factura-footer { text-align: center; margin-top: 24px; font-size: 13px; }
+
+@media print {
+  .navbar, .no-print { display: none !important; }
+  .app-shell { background: #fff !important; }
+  .factura-sheet { box-shadow: none !important; border: none !important; max-width: 100%; }
+  body { background: #fff !important; }
+}
+
+/* ---- Login page ---- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+  padding: 24px;
+}
+.login-card {
+  display: flex;
+  width: 100%;
+  max-width: 920px;
+  min-height: 560px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+.login-brand {
+  flex: 1;
+  background: linear-gradient(160deg, #0f766e 0%, #115e59 60%, #0b3d3a 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 48px 40px;
+}
+.login-brand-content { max-width: 320px; }
+.login-uniban-logo {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 28px;
+}
+.login-brand-title { font-size: 32px; font-weight: 800; margin: 0 0 6px; }
+.login-brand-subtitle { font-size: 15px; opacity: 0.85; margin: 0 0 28px; }
+.login-brand-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.login-brand-list li {
+  font-size: 13.5px;
+  opacity: 0.92;
+  padding-left: 22px;
+  position: relative;
+  line-height: 1.4;
+}
+.login-brand-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #5DCAA5;
+  font-weight: 700;
+}
+.login-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+}
+.login-form { width: 100%; max-width: 320px; }
+.login-form-title { font-size: 26px; font-weight: 700; margin: 0 0 4px; color: #111827; }
+.login-form-subtitle { font-size: 14px; color: #6b7280; margin: 0 0 28px; }
+.login-field { margin-bottom: 18px; }
+.login-field input { padding: 12px 14px; font-size: 15px; }
+.login-password-wrap { position: relative; display: flex; align-items: center; }
+.login-password-wrap input { padding-right: 42px; }
+.login-password-toggle {
+  position: absolute;
+  right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: #6b7280;
+}
+.login-password-toggle:hover { background: rgba(15,118,110,0.08); color: #0f766e; }
+.login-submit { width: 100%; padding: 13px; font-size: 15px; margin-top: 8px; }
+.login-error { margin-bottom: 8px; }
+@media (max-width: 720px) {
+  .login-card { flex-direction: column; min-height: unset; }
+  .login-brand { padding: 32px 28px; }
+  .login-brand-content { max-width: none; }
+}
