@@ -92,26 +92,26 @@ export default function Venta() {
           />
           <div className="pos-product-list">
             {disponibles.length === 0 && (
-              <p className="text-muted" style={{ fontSize: 13, marginTop: 12 }}>
+              <p className="empty-state">
                 No hay productos disponibles con ese criterio.
               </p>
             )}
             {disponibles.map((p) => (
               <button key={p.id} className="pos-product-item" onClick={() => agregarProducto(p)}>
                 <div>
-                  <div style={{ fontWeight: 600 }}>{p.nombre}</div>
-                  <div className="text-muted" style={{ fontSize: 12 }}>
+                  <div className="pos-product-name">{p.nombre}</div>
+                  <div className="text-muted text-xs">
                     {p.codigo} · {p.rangoTalla?.nombre} · disp: {p.cantidad}
                   </div>
                 </div>
-                <div style={{ fontWeight: 700 }}>${Number(p.precio).toLocaleString('es-CO')}</div>
+                <div className="text-strong">${Number(p.precio).toLocaleString('es-CO')}</div>
               </button>
             ))}
           </div>
         </div>
 
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Carrito</h3>
+          <h3 className="card-title">Carrito</h3>
 
           <div className="form-grid">
             <div>
@@ -129,7 +129,7 @@ export default function Venta() {
           </div>
 
           {carrito.length === 0 ? (
-            <p className="text-muted" style={{ fontSize: 13 }}>Aún no has agregado productos.</p>
+            <p className="empty-state">Aún no has agregado productos.</p>
           ) : (
             <table>
               <thead>
@@ -139,7 +139,7 @@ export default function Venta() {
                 {carrito.map((item) => (
                   <tr key={item.producto.id}>
                     <td>{item.producto.nombre}</td>
-                    <td style={{ width: 70 }}>
+                    <td className="col-narrow">
                       <input
                         type="number"
                         min="1"
@@ -168,7 +168,7 @@ export default function Venta() {
 
           {error && <div className="error">{error}</div>}
 
-          <button className="btn" style={{ width: '100%', marginTop: 12 }} onClick={registrarVenta} disabled={guardando}>
+          <button className="btn btn-block" onClick={registrarVenta} disabled={guardando}>
             {guardando ? 'Registrando...' : 'Registrar venta y generar factura'}
           </button>
         </div>

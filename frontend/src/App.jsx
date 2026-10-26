@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './context/AuthContext.jsx'
-import { useTheme } from './context/ThemeContext.jsx'
 import Navbar from './components/Navbar.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -22,7 +21,6 @@ function Privado({ children, soloAdmin }) {
 
 export default function App() {
   const { user } = useAuth()
-  const { theme } = useTheme()
 
   if (!user) {
     return (
@@ -34,7 +32,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell" data-theme={theme}>
+    <div className="app-shell">
       <Navbar />
       <Routes>
         <Route path="/login" element={<Navigate to="/" replace />} />

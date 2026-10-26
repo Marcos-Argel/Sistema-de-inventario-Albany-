@@ -61,7 +61,7 @@ export default function Usuarios() {
       <p className="text-muted">Crea, edita y activa o desactiva los usuarios que pueden entrar al sistema.</p>
 
       <form className="card" onSubmit={handleSubmit}>
-        <h3 style={{ marginTop: 0 }}>{editId ? 'Editar usuario' : 'Nuevo usuario'}</h3>
+        <h3 className="card-title">{editId ? 'Editar usuario' : 'Nuevo usuario'}</h3>
         <div className="form-grid">
           <div>
             <label>Usuario</label>
@@ -91,15 +91,15 @@ export default function Usuarios() {
           </div>
         </div>
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-          <input type="checkbox" name="activo" checked={form.activo} onChange={handleChange} style={{ width: 'auto' }} />
-          <span style={{ fontWeight: 400 }}>Usuario activo (puede iniciar sesión)</span>
+        <label className="checkbox-label">
+          <input type="checkbox" name="activo" checked={form.activo} onChange={handleChange} />
+          <span>Usuario activo (puede iniciar sesión)</span>
         </label>
 
         {error && <div className="error">{error}</div>}
         <button className="btn" type="submit">{editId ? 'Guardar cambios' : 'Crear usuario'}</button>
         {editId && (
-          <button type="button" className="btn btn-secondary" style={{ marginLeft: 8 }} onClick={cancelarEdicion}>
+          <button type="button" className="btn btn-secondary" onClick={cancelarEdicion}>
             Cancelar
           </button>
         )}
@@ -117,12 +117,12 @@ export default function Usuarios() {
                 <td>{u.nombreCompleto}</td>
                 <td>{u.rol}</td>
                 <td>
-                  <span className="badge" style={{ background: u.activo ? '#C0DD97' : '#F0997B', color: '#1f2937' }}>
+                  <span className={`badge ${u.activo ? "badge-activo" : "badge-inactivo"}`}>
                     {u.activo ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
                 <td>
-                  <button className="btn btn-secondary" style={{ marginRight: 6 }} onClick={() => editar(u)}>Editar</button>
+                  <button className="btn btn-secondary" onClick={() => editar(u)}>Editar</button>
                   <button className={u.activo ? 'btn btn-danger' : 'btn'} onClick={() => cambiarEstado(u)}>
                     {u.activo ? 'Desactivar' : 'Activar'}
                   </button>

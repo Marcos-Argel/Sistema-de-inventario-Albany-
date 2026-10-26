@@ -2,6 +2,7 @@ package com.albany.inventory.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,14 @@ public class GlobalExceptionHandler {
         Map<String, String> body = new HashMap<>();
         body.put("mensaje", ex.getMessage());
         return ResponseEntity.badRequest().body(body);
+    }
+
+    // Dos operaciones compitieron por el mismo producto (bloqueo o deadlock en la BD)
+    @ExceptionHandler(PessimisticLockingFailureException.class)
+    public ResponseEntity<Map<String, String>> handleLocking(PessimisticLockingFailureException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("mensaje", "Otro usuario esta modificando este producto, intenta de nuevo");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

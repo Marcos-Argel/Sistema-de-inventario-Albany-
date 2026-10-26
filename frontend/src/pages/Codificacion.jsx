@@ -116,7 +116,7 @@ export default function Codificacion() {
       <p className="text-muted">Base del sistema de clasificación inteligente: cada rango de talla tiene un color de marbete asociado.</p>
 
       <form className="card" onSubmit={handleRangoSubmit}>
-        <h3 style={{ marginTop: 0 }}>{rangoEditId ? 'Editar rango de talla' : 'Nuevo rango de talla'}</h3>
+        <h3 className="card-title">{rangoEditId ? 'Editar rango de talla' : 'Nuevo rango de talla'}</h3>
         <div className="form-grid">
           <div>
             <label>Rango de talla</label>
@@ -128,7 +128,7 @@ export default function Codificacion() {
           </div>
           <div>
             <label>Color (marbete)</label>
-            <input type="color" name="colorHex" value={rangoForm.colorHex} onChange={handleRangoChange} style={{ height: 38 }} />
+            <input type="color" name="colorHex" value={rangoForm.colorHex} onChange={handleRangoChange} />
           </div>
           <div>
             <label>Orden en estantería</label>
@@ -138,7 +138,7 @@ export default function Codificacion() {
         {rangoError && <div className="error">{rangoError}</div>}
         <button className="btn" type="submit">{rangoEditId ? 'Guardar cambios' : 'Agregar rango'}</button>
         {rangoEditId && (
-          <button type="button" className="btn btn-secondary" style={{ marginLeft: 8 }} onClick={cancelarEdicionRango}>
+          <button type="button" className="btn btn-secondary" onClick={cancelarEdicionRango}>
             Cancelar
           </button>
         )}
@@ -150,12 +150,12 @@ export default function Codificacion() {
           <tbody>
             {rangos.map((r) => (
               <tr key={r.id}>
-                <td><span style={{ display: 'inline-block', width: 24, height: 24, borderRadius: 4, background: r.colorHex }} /></td>
+                <td><span className="swatch" style={{ background: r.colorHex }} /></td>
                 <td>{r.nombre}</td>
                 <td>{r.colorNombre}</td>
                 <td>{r.orden}</td>
                 <td>
-                  <button className="btn btn-secondary" style={{ marginRight: 6 }} onClick={() => editarRango(r)}>Editar</button>
+                  <button className="btn btn-secondary" onClick={() => editarRango(r)}>Editar</button>
                   <button className="btn btn-danger" onClick={() => eliminarRango(r.id)}>Eliminar</button>
                 </td>
               </tr>
@@ -164,11 +164,11 @@ export default function Codificacion() {
         </table>
       </div>
 
-      <h2 style={{ marginTop: 40 }}>Categorías de producto</h2>
+      <h2 className="section-title">Categorías de producto</h2>
       <p className="text-muted">Ej: Body, Pijama, Vestido, Conjunto, Calzado. Se usan al registrar productos nuevos.</p>
 
       <form className="card" onSubmit={handleCategoriaSubmit}>
-        <h3 style={{ marginTop: 0 }}>{categoriaEditId ? 'Editar categoría' : 'Nueva categoría'}</h3>
+        <h3 className="card-title">{categoriaEditId ? 'Editar categoría' : 'Nueva categoría'}</h3>
         <div className="form-grid">
           <div>
             <label>Nombre</label>
@@ -182,7 +182,7 @@ export default function Codificacion() {
         {categoriaError && <div className="error">{categoriaError}</div>}
         <button className="btn" type="submit">{categoriaEditId ? 'Guardar cambios' : 'Agregar categoría'}</button>
         {categoriaEditId && (
-          <button type="button" className="btn btn-secondary" style={{ marginLeft: 8 }} onClick={cancelarEdicionCategoria}>
+          <button type="button" className="btn btn-secondary" onClick={cancelarEdicionCategoria}>
             Cancelar
           </button>
         )}
@@ -197,7 +197,7 @@ export default function Codificacion() {
                 <td>{c.nombre}</td>
                 <td className="text-muted">{c.descripcion}</td>
                 <td>
-                  <button className="btn btn-secondary" style={{ marginRight: 6 }} onClick={() => editarCategoria(c)}>Editar</button>
+                  <button className="btn btn-secondary" onClick={() => editarCategoria(c)}>Editar</button>
                   <button className="btn btn-danger" onClick={() => eliminarCategoria(c.id)}>Eliminar</button>
                 </td>
               </tr>

@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Albany - Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      // Aplica el tema guardado antes de pintar, para evitar un parpadeo claro al cargar
+      try { document.documentElement.dataset.theme = localStorage.getItem('albany_theme') || 'light' } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

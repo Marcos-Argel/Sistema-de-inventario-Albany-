@@ -38,8 +38,8 @@ export default function Factura() {
       <div className="card factura-sheet">
         <div className="factura-header">
           <div>
-            <h2 style={{ margin: 0 }}>Albany</h2>
-            <p className="text-muted" style={{ margin: 0, fontSize: 13 }}>
+            <h2>Albany</h2>
+            <p className="text-muted text-sm">
               Ropa y calzado infantil · Turbo, Antioquia
             </p>
           </div>

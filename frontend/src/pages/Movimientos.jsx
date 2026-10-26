@@ -66,12 +66,12 @@ export default function Movimientos() {
           </div>
         </div>
         {error && <div className="error">{error}</div>}
-        {mensaje && <div style={{ color: '#0f766e', fontSize: 13, marginTop: 6 }}>{mensaje}</div>}
+        {mensaje && <div className="success">{mensaje}</div>}
         <button className="btn" type="submit">Registrar movimiento</button>
       </form>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Historial</h3>
+        <h3 className="card-title">Historial</h3>
         <table>
           <thead>
             <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Usuario</th><th>Observación</th></tr>
@@ -82,7 +82,7 @@ export default function Movimientos() {
                 <td>{new Date(m.fecha).toLocaleString('es-CO')}</td>
                 <td>{m.producto?.codigo} - {m.producto?.nombre}</td>
                 <td>
-                  <span className="badge" style={{ background: m.tipo === 'ENTRADA' ? '#C0DD97' : '#F0997B', color: '#1f2937' }}>
+                  <span className={`badge badge-${m.tipo.toLowerCase()}`}>
                     {m.tipo}
                   </span>
                 </td>

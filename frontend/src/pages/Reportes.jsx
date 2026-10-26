@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import api from '../api/client'
 import { exportToCsv } from '../utils/csv.js'
+import { formatCOP } from '../utils/format.js'
+import BarList from '../components/BarList.jsx'
 
 export default function Reportes() {
   const [stockBajo, setStockBajo] = useState([])
@@ -18,9 +20,6 @@ export default function Reportes() {
     api.get('/movimientos').then((res) => setMovimientos(res.data))
     api.get('/ventas').then((res) => setVentas(res.data))
   }, [])
-
-  const maxCantidad = Math.max(1, ...Object.values(porCategoria))
-  const maxVendidos = Math.max(1, ...topProductos.map((p) => p.unidadesVendidas))
 
   const exportarInventario = () => {
     exportToCsv(
@@ -115,47 +114,39 @@ export default function Reportes() {
       <h2>Reportes</h2>
 
       <div className="card">
-        <div className="reporte-card-header">
-          <h3 style={{ margin: 0 }}>Top 5 productos más vendidos</h3>
+        <div className="card-header">
+          <h3 className="card-title">Top 5 productos más vendidos</h3>
           <button className="btn btn-secondary" onClick={exportarTopProductos}>Exportar CSV</button>
         </div>
-        {topProductos.length === 0 ? (
-          <p className="text-muted" style={{ fontSize: 13 }}>Aún no hay ventas registradas.</p>
-        ) : (
-          topProductos.map((p) => (
-            <div key={p.codigo} style={{ marginBottom: 10 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
-                <span>{p.nombre} <span className="text-muted">({p.codigo})</span></span>
-                <span>{p.unidadesVendidas} unid. · ${Number(p.ingresosGenerados).toLocaleString('es-CO')}</span>
-              </div>
-              <div style={{ background: 'var(--border-color)', borderRadius: 4, height: 10 }}>
-                <div style={{ width: `${(p.unidadesVendidas / maxVendidos) * 100}%`, background: '#0f766e', height: 10, borderRadius: 4 }} />
-              </div>
-            </div>
-          ))
-        )}
+        <BarList
+          items={topProductos.map((p) => ({
+            key: p.codigo,
+            label: `${p.nombre} (${p.codigo})`,
+            value: p.unidadesVendidas,
+            detalle: `${formatCOP(p.ingresosGenerados)} en ventas`,
+          }))}
+          formatValue={(v) => `${v} und.`}
+          vacio="Aún no hay ventas registradas."
+        />
       </div>
 
       <div className="card">
-        <div className="reporte-card-header">
-          <h3 style={{ margin: 0 }}>Unidades por categoría</h3>
+        <div className="card-header">
+          <h3 className="card-title">Unidades por categoría</h3>
           <button className="btn btn-secondary" onClick={exportarInventario}>Exportar inventario CSV</button>
         </div>
-        {Object.entries(porCategoria).map(([nombre, cantidad]) => (
-          <div key={nombre} style={{ marginBottom: 10 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
-              <span>{nombre}</span><span>{cantidad}</span>
-            </div>
-            <div style={{ background: 'var(--border-color)', borderRadius: 4, height: 10 }}>
-              <div style={{ width: `${(cantidad / maxCantidad) * 100}%`, background: '#0f766e', height: 10, borderRadius: 4 }} />
-            </div>
-          </div>
-        ))}
+        <BarList
+          items={Object.entries(porCategoria)
+            .map(([nombre, cantidad]) => ({ key: nombre, label: nombre, value: cantidad }))
+            .sort((a, b) => b.value - a.value)}
+          formatValue={(v) => `${v} und.`}
+          vacio="Aún no hay productos registrados."
+        />
       </div>
 
       <div className="card">
-        <div className="reporte-card-header">
-          <h3 style={{ margin: 0, color: '#dc2626' }}>Productos con stock bajo</h3>
+        <div className="card-header">
+          <h3 className="card-title text-danger">Productos con stock bajo</h3>
         </div>
         <table>
           <thead>
@@ -165,7 +156,7 @@ export default function Reportes() {
             {stockBajo.map((p) => (
               <tr key={p.id}>
                 <td>{p.codigo}</td><td>{p.nombre}</td>
-                <td style={{ color: '#dc2626', fontWeight: 700 }}>{p.cantidad}</td>
+                <td className="stock-bajo">{p.cantidad}</td>
                 <td>{p.stockMinimo}</td><td>{p.ubicacion}</td>
               </tr>
             ))}
@@ -175,19 +166,19 @@ export default function Reportes() {
       </div>
 
       <div className="card">
-        <div className="reporte-card-header">
-          <h3 style={{ margin: 0 }}>Historial de movimientos</h3>
+        <div className="card-header">
+          <h3 className="card-title">Historial de movimientos</h3>
           <button className="btn btn-secondary" onClick={exportarMovimientos}>Exportar CSV</button>
         </div>
-        <p className="text-muted" style={{ fontSize: 13 }}>{movimientos.length} movimientos registrados.</p>
+        <p className="text-muted text-sm">{movimientos.length} movimientos registrados.</p>
       </div>
 
       <div className="card">
-        <div className="reporte-card-header">
-          <h3 style={{ margin: 0 }}>Ventas</h3>
+        <div className="card-header">
+          <h3 className="card-title">Ventas</h3>
           <button className="btn btn-secondary" onClick={exportarVentas}>Exportar CSV</button>
         </div>
-        <p className="text-muted" style={{ fontSize: 13 }}>{ventas.length} ventas registradas.</p>
+        <p className="text-muted text-sm">{ventas.length} ventas registradas.</p>
       </div>
     </div>
   )

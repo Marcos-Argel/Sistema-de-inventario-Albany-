@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,38 +33,47 @@ public class VentaService {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new ApiException("Usuario no encontrado"));
 
-        // Validar stock disponible de todos los items antes de descontar nada
-        List<Producto> productosCache = new ArrayList<>();
+        // Cantidad total pedida por producto (por si el mismo producto viene en varias lineas).
+        // TreeMap para bloquear siempre en el mismo orden y evitar deadlocks entre ventas.
+        Map<Long, Integer> cantidadPorProducto = new TreeMap<>();
         for (VentaItemRequest item : request.getItems()) {
-            Producto producto = productoRepository.findById(item.getProductoId())
-                    .orElseThrow(() -> new ApiException("Producto no encontrado: id " + item.getProductoId()));
+            cantidadPorProducto.merge(item.getProductoId(), item.getCantidad(), Integer::sum);
+        }
+
+        // Validar stock disponible de todos los items antes de descontar nada
+        Map<Long, Producto> productos = new TreeMap<>();
+        for (Map.Entry<Long, Integer> entry : cantidadPorProducto.entrySet()) {
+            Producto producto = productoRepository.findByIdForUpdate(entry.getKey())
+                    .orElseThrow(() -> new ApiException("Producto no encontrado: id " + entry.getKey()));
             if (!producto.isActivo()) {
                 throw new ApiException("El producto '" + producto.getNombre() + "' ya no está disponible");
             }
-            if (producto.getCantidad() < item.getCantidad()) {
+            if (producto.getCantidad() < entry.getValue()) {
                 throw new ApiException("Stock insuficiente para '" + producto.getNombre()
                         + "'. Disponible: " + producto.getCantidad());
             }
-            productosCache.add(producto);
+            productos.put(producto.getId(), producto);
         }
 
-        Venta venta = Venta.builder()
-                .numeroFactura(generarNumeroFactura())
+        // Se guarda primero con un numero temporal para obtener el id,
+        // y el numero de factura se deriva del id (unico y sin carreras)
+        Venta venta = ventaRepository.save(Venta.builder()
+                .numeroFactura("TMP-" + UUID.randomUUID().toString().substring(0, 16))
                 .cliente(request.getCliente())
                 .clienteDocumento(request.getClienteDocumento())
                 .usuario(usuario)
-                .subtotal(0.0)
-                .total(0.0)
-                .build();
+                .subtotal(BigDecimal.ZERO)
+                .total(BigDecimal.ZERO)
+                .build());
+        venta.setNumeroFactura(String.format("FAC-%06d", venta.getId()));
 
-        double totalVenta = 0.0;
+        BigDecimal totalVenta = BigDecimal.ZERO;
 
-        for (int i = 0; i < request.getItems().size(); i++) {
-            VentaItemRequest item = request.getItems().get(i);
-            Producto producto = productosCache.get(i);
+        for (VentaItemRequest item : request.getItems()) {
+            Producto producto = productos.get(item.getProductoId());
 
-            double subtotalLinea = producto.getPrecio() * item.getCantidad();
-            totalVenta += subtotalLinea;
+            BigDecimal subtotalLinea = producto.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad()));
+            totalVenta = totalVenta.add(subtotalLinea);
 
             DetalleVenta detalle = DetalleVenta.builder()
                     .venta(venta)
@@ -91,11 +103,6 @@ public class VentaService {
         venta.setTotal(totalVenta);
 
         return ventaRepository.save(venta);
-    }
-
-    private String generarNumeroFactura() {
-        long siguiente = ventaRepository.count() + 1;
-        return String.format("FAC-%06d", siguiente);
     }
 
     public List<Venta> historial() {

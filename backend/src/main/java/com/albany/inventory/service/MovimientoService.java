@@ -25,7 +25,7 @@ public class MovimientoService {
 
     @Transactional
     public MovimientoInventario registrar(MovimientoRequest req, String username) {
-        Producto producto = productoRepository.findById(req.getProductoId())
+        Producto producto = productoRepository.findByIdForUpdate(req.getProductoId())
                 .orElseThrow(() -> new ApiException("Producto no encontrado"));
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new ApiException("Usuario no encontrado"));

@@ -43,6 +43,19 @@ npm run dev
 ```
 Abre http://localhost:5173
 
+### Tests
+```bash
+cd backend
+mvn test
+```
+Los tests de ventas y movimientos también corren al construir la imagen de Docker: si alguno falla, el build se detiene.
+
+### Configuración para producción
+Copia `.env.example` como `.env` y cambia `MYSQL_ROOT_PASSWORD` y `JWT_SECRET`. `docker-compose` lo lee automáticamente. Para el modo manual, define las mismas variables (más `CORS_ALLOWED_ORIGINS` si el frontend corre en otro dominio).
+
+### Migraciones
+Si tu base de datos se creó antes del cambio de precios a `DECIMAL`, ejecuta una vez `backend/migraciones/001_dinero_decimal.sql` (Hibernate no cambia el tipo de columnas que ya existen).
+
 ## Usuarios de prueba (se crean automáticamente al iniciar)
 | Usuario   | Contraseña   | Rol      |
 |-----------|--------------|----------|

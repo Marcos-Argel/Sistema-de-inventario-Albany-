@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +38,11 @@ public class Venta {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @Column(nullable = false)
-    private Double subtotal;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal subtotal;
 
-    @Column(nullable = false)
-    private Double total;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal total;
 
     @Column(nullable = false)
     @Builder.Default

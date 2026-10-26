@@ -6,6 +6,7 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('albany_theme') || 'light')
 
   useEffect(() => {
+    document.documentElement.dataset.theme = theme
     localStorage.setItem('albany_theme', theme)
   }, [theme])
 

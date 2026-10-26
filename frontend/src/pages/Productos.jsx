@@ -77,7 +77,7 @@ export default function Productos() {
 
   return (
     <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header">
         <h2>Productos</h2>
         {isAdmin && (
           <button className="btn" onClick={() => { setShowForm(!showForm); setEditId(null); setForm(emptyForm) }}>
@@ -152,18 +152,18 @@ export default function Productos() {
                 <td>{p.nombre}</td>
                 <td>{p.categoria?.nombre}</td>
                 <td>
-                  <span className="badge" style={{ background: p.rangoTalla?.colorHex, color: '#1f2937' }}>
+                  <span className="badge" style={{ background: p.rangoTalla?.colorHex }}>
                     {p.rangoTalla?.nombre}
                   </span>
                 </td>
-                <td style={{ color: p.cantidad <= p.stockMinimo ? '#dc2626' : undefined, fontWeight: p.cantidad <= p.stockMinimo ? 700 : 400 }}>
+                <td className={p.cantidad <= p.stockMinimo ? "stock-bajo" : undefined}>
                   {p.cantidad}
                 </td>
                 <td>{p.ubicacion}</td>
                 <td>${Number(p.precio).toLocaleString('es-CO')}</td>
                 {isAdmin && (
                   <td>
-                    <button className="btn btn-secondary" style={{ marginRight: 6 }} onClick={() => editar(p)}>Editar</button>
+                    <button className="btn btn-secondary" onClick={() => editar(p)}>Editar</button>
                     <button className="btn btn-danger" onClick={() => eliminar(p.id)}>Eliminar</button>
                   </td>
                 )}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useTheme } from '../context/ThemeContext.jsx'
 import unibanLogo from '../assets/uniban-logo.png'
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -28,12 +30,23 @@ export default function Login() {
 
   return (
     <div className="login-page">
+      <button
+        type="button"
+        className="btn-icon login-theme-toggle"
+        onClick={toggleTheme}
+        title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+      >
+        {theme === 'light' ? '🌙' : '☀️'}
+      </button>
       <div className="login-card">
         <div className="login-brand">
           <div className="login-brand-content">
             <img src={unibanLogo} alt="Fundación Uniban" className="login-uniban-logo" />
             <h1 className="login-brand-title">Albany</h1>
             <p className="login-brand-subtitle">Sistema de clasificación e inventario</p>
+            <div className="login-tallas" aria-hidden="true">
+              {[1, 2, 3, 4, 5, 6].map((n) => <span key={n} style={{ background: `var(--talla-${n})` }} />)}
+            </div>
             <ul className="login-brand-list">
               <li>Codificación inteligente por colores y tallas</li>
               <li>Control digital de inventario en tiempo real</li>
