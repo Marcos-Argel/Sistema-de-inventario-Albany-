@@ -36,7 +36,7 @@ class MovimientoServiceTest {
     void setUp() {
         producto = Producto.builder().id(1L).nombre("Body").cantidad(10).precio(new BigDecimal("1000")).build();
         when(productoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(producto));
-        when(usuarioRepository.findByUsername("admin"))
+        lenient().when(usuarioRepository.findByUsername("admin"))
                 .thenReturn(Optional.of(Usuario.builder().id(1L).username("admin").rol(Rol.ADMIN).build()));
         lenient().when(movimientoRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
     }
@@ -46,6 +46,7 @@ class MovimientoServiceTest {
         req.setProductoId(1L);
         req.setTipo(tipo);
         req.setCantidad(cantidad);
+        req.setMotivo("CONTEO");
         return req;
     }
 
@@ -69,6 +70,34 @@ class MovimientoServiceTest {
                 .hasMessageContaining("Stock insuficiente");
         assertThat(producto.getCantidad()).isEqualTo(10);
         verify(movimientoRepository, never()).save(any());
+    }
+
+    @Test
+    void vendedorNoPuedeRegistrarEntradaManual() {
+        when(usuarioRepository.findByUsername("vendedor"))
+                .thenReturn(Optional.of(Usuario.builder().id(2L).username("vendedor").rol(Rol.VENDEDOR).build()));
+        assertThatThrownBy(() -> movimientoService.registrar(movimiento("ENTRADA", 3), "vendedor"))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("Solo el administrador");
+        assertThat(producto.getCantidad()).isEqualTo(10);
+        verify(movimientoRepository, never()).save(any());
+    }
+
+    @Test
+    void vendedorPuedeRegistrarSalida() {
+        when(usuarioRepository.findByUsername("vendedor"))
+                .thenReturn(Optional.of(Usuario.builder().id(2L).username("vendedor").rol(Rol.VENDEDOR).build()));
+        movimientoService.registrar(movimiento("SALIDA", 2), "vendedor");
+        assertThat(producto.getCantidad()).isEqualTo(8);
+    }
+
+    @Test
+    void elMotivoQuedaEnLaObservacion() {
+        MovimientoRequest req = movimiento("SALIDA", 1);
+        req.setMotivo("DANADO");
+        req.setObservacion("costura rota");
+        MovimientoInventario m = movimientoService.registrar(req, "admin");
+        assertThat(m.getObservacion()).isEqualTo("Ajuste: DANADO - costura rota");
     }
 
     @Test

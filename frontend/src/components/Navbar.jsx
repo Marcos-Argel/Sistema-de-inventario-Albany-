@@ -31,7 +31,7 @@ export default function Navbar() {
         <NavLink to="/venta">Venta</NavLink>
         <NavLink to="/ventas">Facturas</NavLink>
         <NavLink to="/productos">Productos</NavLink>
-        <NavLink to="/movimientos">Movimientos</NavLink>
+        <NavLink to="/movimientos">Ajustes e historial</NavLink>
         {isAdmin && <NavLink to="/compras">Compras</NavLink>}
         {isAdmin && <NavLink to="/reportes">Reportes</NavLink>}
         {isAdmin && <NavLink to="/codificacion">Codificación</NavLink>}
