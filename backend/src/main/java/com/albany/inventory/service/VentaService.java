@@ -55,12 +55,26 @@ public class VentaService {
             productos.put(producto.getId(), producto);
         }
 
+        // Validar el pago antes de guardar nada
+        MetodoPago metodoPago = request.getMetodoPago() == null ? MetodoPago.EFECTIVO : request.getMetodoPago();
+        BigDecimal montoRecibido = metodoPago == MetodoPago.EFECTIVO ? request.getMontoRecibido() : null;
+        if (montoRecibido != null) {
+            BigDecimal totalEsperado = cantidadPorProducto.entrySet().stream()
+                    .map(e -> productos.get(e.getKey()).getPrecio().multiply(BigDecimal.valueOf(e.getValue())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            if (montoRecibido.compareTo(totalEsperado) < 0) {
+                throw new ApiException("El efectivo recibido es menor que el total de la venta");
+            }
+        }
+
         // Se guarda primero con un numero temporal para obtener el id,
         // y el numero de factura se deriva del id (unico y sin carreras)
         Venta venta = ventaRepository.save(Venta.builder()
                 .numeroFactura("TMP-" + UUID.randomUUID().toString().substring(0, 16))
                 .cliente(request.getCliente())
                 .clienteDocumento(request.getClienteDocumento())
+                .metodoPago(metodoPago)
+                .montoRecibido(montoRecibido)
                 .usuario(usuario)
                 .subtotal(BigDecimal.ZERO)
                 .total(BigDecimal.ZERO)

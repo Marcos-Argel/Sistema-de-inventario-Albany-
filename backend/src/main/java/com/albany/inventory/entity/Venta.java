@@ -44,6 +44,14 @@ public class Venta {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private MetodoPago metodoPago;
+
+    // Solo en pagos en efectivo: lo que entrego el cliente (el cambio se calcula al mostrar)
+    @Column(precision = 12, scale = 2)
+    private BigDecimal montoRecibido;
+
     @Column(nullable = false)
     @Builder.Default
     private LocalDateTime fecha = LocalDateTime.now();

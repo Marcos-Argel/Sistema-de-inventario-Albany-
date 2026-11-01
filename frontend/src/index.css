@@ -264,8 +264,51 @@ tbody tr:hover td { background: var(--bg-subtle); }
 }
 .factura-footer { text-align: center; margin-top: 24px; font-size: 13px; }
 
+/* ---- Tiquete POS (impresora termica) ----
+   Siempre negro sobre blanco, igual que el papel, tambien en modo oscuro */
+.factura-actions { flex-wrap: wrap; align-items: center; }
+.ticket-ancho { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.btn-chip {
+  background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--input-border);
+  border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.btn-chip-activo { background: var(--brand); border-color: var(--brand); color: #fff; }
+.ticket {
+  background: #fff; color: #111; margin: 0 auto; padding: 16px 14px 20px;
+  font-family: "Courier New", Courier, monospace; font-size: 12.5px; line-height: 1.45;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12); border: 1px solid #e5e5e5;
+  /* Borde inferior dentado, como papel cortado */
+  -webkit-mask: radial-gradient(6px at 50% calc(100% + 2px), #0000 98%, #000) 50% / 12px 100%;
+          mask: radial-gradient(6px at 50% calc(100% + 2px), #0000 98%, #000) 50% / 12px 100%;
+}
+.ticket-80 { width: 80mm; }
+.ticket-58 { width: 58mm; font-size: 11px; padding: 12px 8px 18px; }
+.ticket-centro { text-align: center; }
+.ticket-tienda { font-size: 1.6em; font-weight: 700; letter-spacing: 2px; }
+.ticket-sep { border: none; border-top: 1px dashed #111; margin: 8px 0; }
+.ticket-fila { display: flex; justify-content: space-between; gap: 8px; }
+.ticket-fila > span:last-child, .ticket-fila > strong:last-child { text-align: right; }
+.ticket-item { margin-bottom: 4px; }
+.ticket-item-detalle { padding-left: 8px; }
+.ticket-codigo { color: #555; }
+.ticket-total { font-size: 1.35em; font-weight: 700; }
+.ticket-pie { font-size: 0.85em; color: #555; margin-top: 4px; }
+
+/* ---- Pago en el punto de venta ---- */
+.pos-pago { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.pos-cambio {
+  display: flex; justify-content: space-between; margin-top: 10px; padding: 10px 12px;
+  border-radius: var(--radius-sm); background: var(--brand-soft); color: var(--success);
+  font-weight: 800; font-size: 16px;
+}
+.pos-cambio-falta { background: var(--danger-soft); color: var(--danger); }
+.col-costo { width: 120px; }
+.input-busqueda { max-width: 380px; }
+
 @media print {
   .navbar, .no-print { display: none !important; }
+  .container:has(.ticket) { padding: 0; max-width: none; }
+  .ticket { width: 100%; margin: 0; padding: 2mm 3mm; box-shadow: none; border: none; -webkit-mask: none; mask: none; }
   .app-shell, body { background: #fff !important; }
   .factura-sheet { box-shadow: none !important; border: none !important; max-width: 100%; }
 }

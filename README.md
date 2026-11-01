@@ -72,11 +72,17 @@ Si tu base de datos se creó antes del cambio de precios a `DECIMAL`, ejecuta un
 - Gestión de categorías
 - Reportes: unidades por categoría, productos con stock bajo, valor total del inventario
 - Registrar entradas y salidas
+- **Compras a proveedores**: registrar la factura del proveedor (NIT, número, fecha, costo por producto); el stock se suma automáticamente y cada compra queda consultable e imprimible en *Compras*
 
 ### Rol VENDEDOR
 - Consultar productos y su ubicación/código de color
 - Registrar salidas (y entradas) de inventario
 - Ver historial de movimientos
+- Punto de venta con método de pago (efectivo, tarjeta, transferencia) y cálculo de cambio
+- Tiquete POS para impresora térmica de 80 mm o 58 mm
+
+### Datos de la tienda en el tiquete
+Edita `frontend/src/config/tienda.js` para poner el NIT, la dirección y el teléfono reales de la tienda. Los campos vacíos no se imprimen.
 
 ## Sistema de codificación por colores
 Cada rango de talla (0-3 meses, 3-6 meses, etc.) tiene asociado un color de marbete. Al registrar un producto, se le asigna su rango de talla y automáticamente hereda el color correspondiente, que se usa físicamente en la etiqueta y estantería para ubicar la prenda en segundos.

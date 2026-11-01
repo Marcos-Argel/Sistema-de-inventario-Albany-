@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+// En desarrollo y con Docker se usa '/api' (proxy de Vite o de nginx).
+// En Render, VITE_API_URL apunta al backend, por ejemplo https://albany-backend.onrender.com
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${API_URL}/api`,
 })
 
 api.interceptors.request.use((config) => {

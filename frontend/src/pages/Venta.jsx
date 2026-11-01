@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/client'
+import { formatCOP, METODOS_PAGO } from '../utils/format.js'
 
 export default function Venta() {
   const [productos, setProductos] = useState([])
@@ -10,6 +11,8 @@ export default function Venta() {
   const [clienteDocumento, setClienteDocumento] = useState('')
   const [error, setError] = useState('')
   const [guardando, setGuardando] = useState(false)
+  const [metodoPago, setMetodoPago] = useState('EFECTIVO')
+  const [recibido, setRecibido] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -53,7 +56,10 @@ export default function Venta() {
     setCarrito((c) => c.filter((item) => item.producto.id !== productoId))
   }
 
-  const total = carrito.reduce((sum, item) => sum + item.producto.precio * item.cantidad, 0)
+  // Redondeo a centavos para evitar errores de coma flotante al sumar
+  const total = Math.round(carrito.reduce((sum, item) => sum + item.producto.precio * item.cantidad, 0) * 100) / 100
+  const montoRecibido = recibido === '' ? null : Number(recibido)
+  const cambio = montoRecibido === null ? null : Math.round((montoRecibido - total) * 100) / 100
 
   const registrarVenta = async () => {
     setError('')
@@ -61,11 +67,17 @@ export default function Venta() {
       setError('Agrega al menos un producto al carrito')
       return
     }
+    if (metodoPago === 'EFECTIVO' && cambio !== null && cambio < 0) {
+      setError('El efectivo recibido es menor que el total')
+      return
+    }
     setGuardando(true)
     try {
       const payload = {
         cliente: cliente || null,
         clienteDocumento: clienteDocumento || null,
+        metodoPago,
+        montoRecibido: metodoPago === 'EFECTIVO' ? montoRecibido : null,
         items: carrito.map((item) => ({ productoId: item.producto.id, cantidad: item.cantidad })),
       }
       const { data } = await api.post('/ventas', payload)
@@ -104,7 +116,7 @@ export default function Venta() {
                     {p.codigo} · {p.rangoTalla?.nombre} · disp: {p.cantidad}
                   </div>
                 </div>
-                <div className="text-strong">${Number(p.precio).toLocaleString('es-CO')}</div>
+                <div className="text-strong">{formatCOP(p.precio)}</div>
               </button>
             ))}
           </div>
@@ -148,8 +160,8 @@ export default function Venta() {
                         onChange={(e) => cambiarCantidad(item.producto.id, e.target.value)}
                       />
                     </td>
-                    <td>${Number(item.producto.precio).toLocaleString('es-CO')}</td>
-                    <td>${Number(item.producto.precio * item.cantidad).toLocaleString('es-CO')}</td>
+                    <td>{formatCOP(item.producto.precio)}</td>
+                    <td>{formatCOP(item.producto.precio * item.cantidad)}</td>
                     <td>
                       <button className="btn btn-danger" onClick={() => quitarDelCarrito(item.producto.id)}>
                         Quitar
@@ -163,13 +175,43 @@ export default function Venta() {
 
           <div className="pos-total">
             <span>Total</span>
-            <span>${Number(total).toLocaleString('es-CO')}</span>
+            <span>{formatCOP(total)}</span>
           </div>
+
+          <div className="pos-pago">
+            <div>
+              <label>Método de pago</label>
+              <select value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
+                {Object.entries(METODOS_PAGO).map(([valor, texto]) => (
+                  <option key={valor} value={valor}>{texto}</option>
+                ))}
+              </select>
+            </div>
+            {metodoPago === 'EFECTIVO' && (
+              <div>
+                <label>Efectivo recibido</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="50"
+                  value={recibido}
+                  onChange={(e) => setRecibido(e.target.value)}
+                  placeholder={total ? String(total) : 'Opcional'}
+                />
+              </div>
+            )}
+          </div>
+          {metodoPago === 'EFECTIVO' && cambio !== null && carrito.length > 0 && (
+            <div className={`pos-cambio${cambio < 0 ? ' pos-cambio-falta' : ''}`}>
+              <span>{cambio < 0 ? 'Falta' : 'Cambio'}</span>
+              <span>{formatCOP(Math.abs(cambio))}</span>
+            </div>
+          )}
 
           {error && <div className="error">{error}</div>}
 
-          <button className="btn btn-block" onClick={registrarVenta} disabled={guardando}>
-            {guardando ? 'Registrando...' : 'Registrar venta y generar factura'}
+          <button className="btn btn-block" onClick={registrarVenta} disabled={guardando || carrito.length === 0}>
+            {guardando ? 'Registrando...' : 'Registrar venta e imprimir tiquete'}
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../api/client'
+import { formatCOP } from '../utils/format.js'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const emptyForm = {
@@ -160,7 +161,7 @@ export default function Productos() {
                   {p.cantidad}
                 </td>
                 <td>{p.ubicacion}</td>
-                <td>${Number(p.precio).toLocaleString('es-CO')}</td>
+                <td>{formatCOP(p.precio)}</td>
                 {isAdmin && (
                   <td>
                     <button className="btn btn-secondary" onClick={() => editar(p)}>Editar</button>

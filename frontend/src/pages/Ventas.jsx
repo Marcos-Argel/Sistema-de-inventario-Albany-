@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
+import { formatCOP } from '../utils/format.js'
 
 export default function Ventas() {
   const [ventas, setVentas] = useState([])
@@ -24,7 +25,7 @@ export default function Ventas() {
                 <td>{new Date(v.fecha).toLocaleString('es-CO')}</td>
                 <td>{v.cliente || 'Consumidor final'}</td>
                 <td>{v.usuario?.nombreCompleto}</td>
-                <td>${Number(v.total).toLocaleString('es-CO')}</td>
+                <td>{formatCOP(v.total)}</td>
                 <td><Link className="btn btn-secondary" to={`/factura/${v.id}`}>Ver factura</Link></td>
               </tr>
             ))}

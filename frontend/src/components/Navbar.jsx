@@ -32,6 +32,7 @@ export default function Navbar() {
         <NavLink to="/ventas">Facturas</NavLink>
         <NavLink to="/productos">Productos</NavLink>
         <NavLink to="/movimientos">Movimientos</NavLink>
+        {isAdmin && <NavLink to="/compras">Compras</NavLink>}
         {isAdmin && <NavLink to="/reportes">Reportes</NavLink>}
         {isAdmin && <NavLink to="/codificacion">Codificación</NavLink>}
         {isAdmin && <NavLink to="/usuarios">Usuarios</NavLink>}

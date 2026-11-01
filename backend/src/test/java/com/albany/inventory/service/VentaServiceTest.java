@@ -127,6 +127,32 @@ class VentaServiceTest {
     }
 
     @Test
+    void efectivoInsuficienteSeRechazaSinDescontarStock() {
+        Producto p = producto(1L, 10, "30000");
+        VentaRequest req = venta(item(1L, 2)); // total 60000
+        req.setMetodoPago(MetodoPago.EFECTIVO);
+        req.setMontoRecibido(new BigDecimal("50000"));
+
+        assertThatThrownBy(() -> ventaService.registrarVenta(req, "vendedor"))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("efectivo recibido");
+        assertThat(p.getCantidad()).isEqualTo(10);
+    }
+
+    @Test
+    void pagoConTarjetaNoGuardaMontoRecibido() {
+        producto(1L, 10, "30000");
+        VentaRequest req = venta(item(1L, 1));
+        req.setMetodoPago(MetodoPago.TARJETA);
+        req.setMontoRecibido(new BigDecimal("100000"));
+
+        Venta resultado = ventaService.registrarVenta(req, "vendedor");
+
+        assertThat(resultado.getMetodoPago()).isEqualTo(MetodoPago.TARJETA);
+        assertThat(resultado.getMontoRecibido()).isNull();
+    }
+
+    @Test
     void ventaSinProductosFalla() {
         VentaRequest vacia = new VentaRequest();
         vacia.setItems(List.of());

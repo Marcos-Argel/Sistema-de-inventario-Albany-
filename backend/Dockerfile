@@ -9,4 +9,6 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/target/albany-inventory.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Ajustes de memoria y arranque para servidores pequenos (512 MB, como el plan gratis de Render)
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=70 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

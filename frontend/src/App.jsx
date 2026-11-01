@@ -11,6 +11,9 @@ import Venta from './pages/Venta.jsx'
 import Ventas from './pages/Ventas.jsx'
 import Factura from './pages/Factura.jsx'
 import Usuarios from './pages/Usuarios.jsx'
+import Compra from './pages/Compra.jsx'
+import Compras from './pages/Compras.jsx'
+import CompraDetalle from './pages/CompraDetalle.jsx'
 
 function Privado({ children, soloAdmin }) {
   const { user, isAdmin } = useAuth()
@@ -45,6 +48,9 @@ export default function App() {
         <Route path="/reportes" element={<Privado soloAdmin><Reportes /></Privado>} />
         <Route path="/codificacion" element={<Privado soloAdmin><Codificacion /></Privado>} />
         <Route path="/usuarios" element={<Privado soloAdmin><Usuarios /></Privado>} />
+        <Route path="/compras" element={<Privado soloAdmin><Compras /></Privado>} />
+        <Route path="/compras/nueva" element={<Privado soloAdmin><Compra /></Privado>} />
+        <Route path="/compras/:id" element={<Privado soloAdmin><CompraDetalle /></Privado>} />
       </Routes>
     </div>
   )
